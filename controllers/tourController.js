@@ -6,6 +6,28 @@ const toursData = JSON.parse(
   )
 );
 
+exports.checkID = (req, res, next, val) => {
+  console.log(`Tour is: ${val}`);
+
+  if (parseInt(req.params.id) > toursData.length - 1) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
+exports.checkBody = (req, res, next) => {
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: 'Operation failed',
+      message: 'No name or price included',
+    });
+  }
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -20,14 +42,6 @@ exports.getTour = (req, res) => {
   const idInteger = req.params.id * 1; //To convert req.params from string to integer
 
   const tour = toursData.find((el) => el.id === idInteger);
-
-  // if (idInteger > toursData.length - 1) {
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
 
   res.status(200).json({
     status: 'success',
@@ -57,13 +71,6 @@ exports.createTour = (req, res) => {
   );
 };
 exports.updateTour = (req, res) => {
-  if (!tour) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   let particularTour = toursData.find(
     (el) => el.id == req.params.id
   );
@@ -83,12 +90,6 @@ exports.updateTour = (req, res) => {
   });
 };
 exports.deleteTour = (req, res) => {
-  if (req.params.id > toursData.length - 1) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
   let data = toursData.find(
     (el) => el.id === req.params.id
   );
