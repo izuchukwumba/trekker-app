@@ -9,6 +9,11 @@ const {
 
 const router = express.Router();
 
+router.param('id', (req, res, next, val) => {
+  console.log(`Tour is: ${val}`);
+  next();
+});
+
 router.route('/').get(getAllTours).post(createTour);
 
 router
